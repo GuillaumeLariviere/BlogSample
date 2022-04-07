@@ -8,22 +8,22 @@ namespace BlogSampleApi.Models
 {
     [Table("tag")]
     [Index("Mot", Name = "UQ__tag__DF50CE3C8AE6A01E", IsUnique = true)]
-    public partial class Tag
+    public partial class Tag : Model
     {
         public Tag()
         {
             IdArticles = new HashSet<Article>();
         }
 
-        [Key]
+/*        [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public int Id { get; set; }*/
         [Column("mot")]
         [StringLength(255)]
         [Unicode(false)]
         public string? Mot { get; set; }
-        [Column("is_deleted")]
-        public bool? IsDeleted { get; set; }
+ /*       [Column("is_deleted")]
+        public bool? IsDeleted { get; set; }*/
 
         [ForeignKey("IdTag")]
         [InverseProperty("IdTags")]

@@ -8,16 +8,16 @@ namespace BlogSampleApi.Models
 {
     [Table("auteur")]
     [Index("Pseudo", Name = "UQ__auteur__EA0EEA22DCC59EC8", IsUnique = true)]
-    public partial class Auteur
+    public partial class Auteur :Model
     {
         public Auteur()
         {
             Articles = new HashSet<Article>();
         }
-
+/*
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public int Id { get; set; }*/
         [Column("nom")]
         [StringLength(255)]
         [Unicode(false)]
@@ -30,8 +30,8 @@ namespace BlogSampleApi.Models
         [StringLength(255)]
         [Unicode(false)]
         public string? Pseudo { get; set; }
-        [Column("is_deleted")]
-        public bool? IsDeleted { get; set; }
+/*        [Column("is_deleted")]
+        public bool? IsDeleted { get; set; }*/
 
         [InverseProperty("IdAuteurNavigation")]
         public virtual AppUser? AppUser { get; set; }

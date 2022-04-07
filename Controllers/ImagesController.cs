@@ -12,97 +12,50 @@ namespace BlogSampleApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImagesController : ControllerBase
+    public class ImagesController : RootController<Image>
     {
-        private readonly AppDbContext _context;
+  
 
-        public ImagesController(AppDbContext context)
+        public ImagesController(AppDbContext context) : base(context)
         {
-            _context = context;
-        }
 
-        // GET: api/Images
+        }
+        // GET: api/Image
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Image>>> GetImages()
+        public override async Task<ActionResult<IEnumerable<Image>>> GetAll()
         {
-            return await _context.Images.ToListAsync();
+            return await base.GetAll();
         }
 
-        // GET: api/Images/5
+        // GET: api/Image/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Image>> GetImage(int id)
+        public override async Task<ActionResult<Image>> GetOne(int id)
         {
-            var image = await _context.Images.FindAsync(id);
+            return await base.GetOne(id);
 
-            if (image == null)
-            {
-                return NotFound();
-            }
-
-            return image;
         }
 
-        // PUT: api/Images/5
+        // PUT: api/Image/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutImage(int id, Image image)
+        public override async Task<IActionResult> PutOne(int id, Image image)
         {
-            if (id != image.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(image).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ImageExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return await base.PutOne(id, image);
         }
 
-        // POST: api/Images
+        // POST: api/Image
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Image>> PostImage(Image image)
+        public override async Task<ActionResult<Image>> PostOne(Image image)
         {
-            _context.Images.Add(image);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetImage", new { id = image.Id }, image);
+            return await base.PostOne(image);
         }
 
-        // DELETE: api/Images/5
+        // DELETE: api/Image/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteImage(int id)
+        public override async Task<IActionResult> DeleteOne(int id)
         {
-            var image = await _context.Images.FindAsync(id);
-            if (image == null)
-            {
-                return NotFound();
-            }
-
-            _context.Images.Remove(image);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ImageExists(int id)
-        {
-            return _context.Images.Any(e => e.Id == id);
+            return await base.DeleteOne(id);
         }
     }
 }

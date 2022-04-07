@@ -8,52 +8,96 @@ namespace BlogSampleApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RootController<C> : ControllerBase where C : RootController<C>
+    public class RootController<M> : ControllerBase where M : Model
     {
         private readonly AppDbContext _context;
-        
-        string controllerName = typeof(C).Name.Replace("Controller","");
-        string modelsName = typeof(C).Name.Replace("sController", "");
 
-        public RootController(AppDbContext context, string controllerName, string modelsName){
-            this.controllerName = controllerName;
-            this.modelsName = modelsName;
+        public RootController(AppDbContext context){
+     
             _context = context;
         }
 
 
-
+        private DbSet<M> GetModels()
+        {
+            return (DbSet<M>)(typeof(AppDbContext).GetProperty(typeof(M).Name + "s").GetValue(_context, null));
+        }
         // GET: api/<RootController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RootController<C>.modelsName>>> GetAll()
+        public virtual async Task<ActionResult<IEnumerable<M>>> GetAll()
         {
             
-            return await _context.controllerName.ToListAsync();
+            return await GetModels().ToListAsync();
         }
 
         // GET api/<RootController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public virtual async Task<ActionResult<M>> GetOne(int id)
         {
-            return "value";
+            var entity = await GetModels().FindAsync(id);
+
+            if(entity == null)
+            {
+                return NotFound();
+            }
+            return entity;
         }
 
         // POST api/<RootController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public virtual async Task<ActionResult<M>> PostOne(M entity)
         {
+            GetModels().Add(entity);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         // PUT api/<RootController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public virtual async Task<IActionResult> PutOne(int id, M entity)
         {
+            if(id != entity.Id)
+            {
+                return BadRequest();
+            }
+            _context.Entry(entity).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
         }
 
         // DELETE api/<RootController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public virtual async Task<IActionResult> DeleteOne(int id)
         {
+            var entity = await GetModels().FindAsync(id);
+            if(entity == null)
+            {
+                return NotFound();
+            }
+            GetModels().Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool EntityExists(int id)
+        {
+            return GetModels().Any(e => e.Id == id);
         }
     }
 }

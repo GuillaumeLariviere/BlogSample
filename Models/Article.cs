@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BlogSampleApi.Models
 {
     [Table("article")]
-    public partial class Article
+    public partial class Article : Model
     {
         public Article()
         {
@@ -15,9 +15,9 @@ namespace BlogSampleApi.Models
             IdTags = new HashSet<Tag>();
         }
 
-        [Key]
+     /*   [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public int Id { get; set; }*/
         [Column("titre")]
         [StringLength(255)]
         [Unicode(false)]
@@ -27,8 +27,8 @@ namespace BlogSampleApi.Models
         public string? Texte { get; set; }
         [Column("published_date")]
         public DateTime? PublishedDate { get; set; }
-        [Column("is_deleted")]
-        public bool? IsDeleted { get; set; }
+/*        [Column("is_deleted")]
+        public bool? IsDeleted { get; set; }*/
         [Column("id_auteur")]
         public int? IdAuteur { get; set; }
 

@@ -8,16 +8,16 @@ namespace BlogSampleApi.Models
 {
     [Table("image")]
     [Index("Filepath", Name = "UQ__image__DFE356BEC687FE12", IsUnique = true)]
-    public partial class Image
+    public partial class Image : Model
     {
         public Image()
         {
             IdArticles = new HashSet<Article>();
         }
-
+/*
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public int Id { get; set; }*/
         [Column("filepath")]
         [StringLength(255)]
         [Unicode(false)]
@@ -26,8 +26,8 @@ namespace BlogSampleApi.Models
         [StringLength(255)]
         [Unicode(false)]
         public string? Titre { get; set; }
-        [Column("is_deleted")]
-        public bool? IsDeleted { get; set; }
+/*        [Column("is_deleted")]
+        public bool? IsDeleted { get; set; }*/
 
         [ForeignKey("IdImage")]
         [InverseProperty("IdImages")]

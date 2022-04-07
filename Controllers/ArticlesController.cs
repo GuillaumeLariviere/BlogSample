@@ -12,97 +12,49 @@ namespace BlogSampleApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ArticlesController : RootController<ArticlesController>
+    public class ArticlesController : RootController<Article>
     {
-        private readonly AppDbContext _context;
 
-        public ArticlesController(AppDbContext context)
+        public ArticlesController(AppDbContext context):base(context)
         {
-            _context = context;
         }
 
         // GET: api/Articles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Article>>> GetArticles()
+        public override async Task<ActionResult<IEnumerable<Article>>> GetAll()
         {
-            return await _context.Articles.ToListAsync();
+            return await base.GetAll();
         }
 
         // GET: api/Articles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Article>> GetArticle(int id)
+        public override async Task<ActionResult<Article>> GetOne(int id)
         {
-            var article = await _context.Articles.FindAsync(id);
+            return await base.GetOne(id);
 
-            if (article == null)
-            {
-                return NotFound();
-            }
-
-            return article;
         }
 
         // PUT: api/Articles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticle(int id, Article article)
+        public override async Task<IActionResult> PutOne(int id, Article article)
         {
-            if (id != article.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(article).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArticleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return await base.PutOne(id, article);
         }
 
         // POST: api/Articles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Article>> PostArticle(Article article)
+        public override async Task<ActionResult<Article>> PostOne(Article article)
         {
-            _context.Articles.Add(article);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetArticle", new { id = article.Id }, article);
+            return await base.PostOne(article);
         }
 
         // DELETE: api/Articles/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArticle(int id)
+        public override async Task<IActionResult> DeleteOne(int id)
         {
-            var article = await _context.Articles.FindAsync(id);
-            if (article == null)
-            {
-                return NotFound();
-            }
-
-            _context.Articles.Remove(article);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ArticleExists(int id)
-        {
-            return _context.Articles.Any(e => e.Id == id);
+            return await base.DeleteOne(id);
         }
     }
 }
