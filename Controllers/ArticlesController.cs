@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogSampleApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogSampleApi.Controllers
 {
@@ -20,6 +21,7 @@ namespace BlogSampleApi.Controllers
         }
 
         // GET: api/Articles
+        [Authorize]
         [HttpGet]
         public override async Task<ActionResult<IEnumerable<Article>>> GetAll()
         {
