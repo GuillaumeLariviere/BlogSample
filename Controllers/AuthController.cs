@@ -60,6 +60,7 @@ namespace BlogSampleApi.Controllers
         [HttpPut]
         public async Task<IActionResult> Register(AppUser appUser)
         {
+
             AppUser user = new AppUser();
             user.Login = appUser.Login;
             user.Password = appUser.Password;
@@ -67,9 +68,12 @@ namespace BlogSampleApi.Controllers
             {
                 user.Password = Encrypte(user.Password);
                 _context.AppUsers.Add(user);
-                AppUsersController controller = new AppUsersController(_context);
-                var result = await controller.PostOne(user);
-                return  Ok(result);
+                int id = await _context.SaveChangesAsync();
+                if (id > 0)
+                {
+                    return Ok();
+                }
+                return BadRequest();
             }
 
             return BadRequest();
@@ -118,7 +122,7 @@ namespace BlogSampleApi.Controllers
             {
                 buffer4 = bytes.GetBytes(0x20);
             }
-            return true;
+            return buffer3.SequenceEqual(buffer4);
         }
 
     }
